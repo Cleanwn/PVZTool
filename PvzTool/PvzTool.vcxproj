@@ -24,7 +24,7 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
-    <PropertyGroup>
+  <PropertyGroup>
     <OutDir>$(SolutionDir)bin\</OutDir>
     <IntDir>$(SolutionDir)bin\int\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
@@ -186,13 +186,10 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Pvz.h" />
     <ClInclude Include="PvzTool.h" />
     <ClInclude Include="PvzToolDlg.h" />
-    <ClInclude Include="Resource.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -208,13 +205,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PvzTool.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="res\PvzTool.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\PvzTool.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PvzTool.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

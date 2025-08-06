@@ -65,12 +65,16 @@ BEGIN_MESSAGE_MAP(CPvzToolDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
     ON_BN_CLICKED(IDC_BTN_SUN, &CPvzToolDlg::OnBnClickedBtnSun)
-    ON_BN_CLICKED(IDC_BTN_SUN_NOP, &CPvzToolDlg::OnBnClickedBtnSunNop)
+    ON_BN_CLICKED(IDC_CHECK_LOCK_SHOVEL, &CPvzToolDlg::OnCheckLockShovel)
     ON_BN_CLICKED(IDC_CHECK_NO_CD, &CPvzToolDlg::OnCheckNoCd)
     ON_BN_CLICKED(IDC_BTN_COIN, &CPvzToolDlg::OnBnClickedBtnCoin)
-    ON_BN_CLICKED(IDC_BTN_BUILD, &CPvzToolDlg::OnBnClickedBtnBuild)
+
+	// 随意放置
+    ON_BN_CLICKED(IDC_CHECK_BUILD, &CPvzToolDlg::OnCheckBuild)
     ON_BN_CLICKED(IDC_CHECK_AUTO_COLLECTED, &CPvzToolDlg::OnCheckAutoCollected)
     ON_BN_CLICKED(IDC_BTN_SPEED, &CPvzToolDlg::OnBnClickedBtnSpeed)
+	ON_BN_CLICKED(IDC_CHECK_NO_FOG, &CPvzToolDlg::OnCheckNoFog)
+	ON_BN_CLICKED(IDC_CHECK_SEE_VASE, &CPvzToolDlg::OnCheckSeeVase)
     ON_BN_CLICKED(IDC_BTN_MORE, &CPvzToolDlg::OnBnClickedBtnMore)
     ON_BN_CLICKED(IDC_BTN_ALL_SCREEN, &CPvzToolDlg::OnBnClickedBtnAllScreen)
     ON_BN_CLICKED(IDC_BTN_UN_ALL_SCREEN, &CPvzToolDlg::OnBnClickedBtnUnAllScreen)
@@ -179,14 +183,15 @@ void CPvzToolDlg::OnBnClickedBtnSun()
     pvz.ModifySunValue(dwSun);
 }
 
-
-void CPvzToolDlg::OnBnClickedBtnSunNop()
+// 锁定铲子
+void CPvzToolDlg::OnCheckLockShovel()
 {
-    CPvz pvz = CPvz();
-    pvz.SunNop();
+	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_LOCK_SHOVEL);
+	CPvz pvz = CPvz();
+	pvz.FreePlant(bChecked == BST_CHECKED);
 }
 
-
+// 种植冷却
 void CPvzToolDlg::OnCheckNoCd()
 {
 	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_NO_CD);
@@ -199,9 +204,7 @@ void CPvzToolDlg::OnCheckNoCd()
 	{
 		pvz.NoCd(false);
 	}
-
 }
-
 
 void CPvzToolDlg::OnBnClickedBtnCoin()
 {
@@ -212,10 +215,18 @@ void CPvzToolDlg::OnBnClickedBtnCoin()
 }
 
 
-void CPvzToolDlg::OnBnClickedBtnBuild()
+void CPvzToolDlg::OnCheckBuild()
 {
-    CPvz pvz = CPvz();
-    pvz.Build();
+	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_BUILD);
+	CPvz pvz = CPvz();
+	if (bChecked == BST_CHECKED)
+	{
+		pvz.Build(true);
+	}
+	else
+	{
+		pvz.Build(false);
+	}
 }
 
 
@@ -240,6 +251,35 @@ void CPvzToolDlg::OnBnClickedBtnSpeed()
     pvz.Speed();
 }
 
+// 清除浓雾
+void CPvzToolDlg::OnCheckNoFog()
+{
+	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_NO_FOG);
+	CPvz pvz = CPvz();
+	if (bChecked == BST_CHECKED)
+	{
+		pvz.NoFog(true);
+	}
+	else
+	{
+		pvz.NoFog(false);
+	}
+}
+
+// 罐子透视
+void CPvzToolDlg::OnCheckSeeVase()
+{
+	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_SEE_VASE);
+	CPvz pvz = CPvz();
+	if (bChecked == BST_CHECKED)
+	{
+		pvz.SeeVase(true);
+	}
+	else
+	{
+		pvz.SeeVase(false);
+	}
+}
 
 void CPvzToolDlg::OnBnClickedBtnMore()
 {

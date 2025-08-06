@@ -53,8 +53,8 @@ VOID CPvz::ModifySunValue(DWORD dwSun)
 }
 
 
-// 种植不减阳光
-VOID CPvz::SunNop()
+// 连续铲子
+VOID CPvz::FreePlant(DWORD Enable)
 {
     DWORD dwPid = GetGamePid();
     if (dwPid == -1)
@@ -64,14 +64,23 @@ VOID CPvz::SunNop()
     }
 
     HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    if (hProcess == NULL)
+    {
+        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
+        return;
+    }
 
-    // 原指令：0041BA74 2B F3 sub esi,ebx
-    // 修改后的指令：
-    //     0041BA74 90 nop 
-    //     0041BA75 90 nop
-    char *nop = "\x90\x90";
-    WriteProcessMemory(hProcess, (LPVOID)0x0041BA74, nop, 2, NULL);
+    if (Enable)
+    {
+        BYTE patch[] = { 0x39 };
+        WriteProcessMemory(hProcess, (LPVOID)0x004158b3, patch, sizeof(patch), NULL);
 
+    }
+    else
+    {
+        BYTE patch[] = { 0x89 };
+        WriteProcessMemory(hProcess, (LPVOID)0x004158b3, patch, sizeof(patch), NULL);
+    }
     CloseHandle(hProcess);
 }
 
@@ -130,8 +139,8 @@ VOID CPvz::ModifyCoinValue(DWORD dwCoin)
 }
 
 
-// 重复建造，无需花盆、无需荷叶
-VOID CPvz::Build()
+// 随意放置
+VOID CPvz::Build(DWORD Enable)
 {
     DWORD dwPid = GetGamePid();
     if (dwPid == -1)
@@ -141,13 +150,26 @@ VOID CPvz::Build()
     }
 
     HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    if (hProcess == NULL)
+    {
+        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
+        return;
+    }
 
-    // 原指令：0040FE2F 0F84 1F090000 je 00410754
-    // 修改后的指令：
-    //     0040FE2F E9 20090000 jmp 00410754
-    //     0040FE34 90          nop
-    char *patch = "\xe9\x20\x09\x00\x00\x90";
-    WriteProcessMemory(hProcess, (LPVOID)0x0040FE2F, patch, 6, NULL);
+    if (Enable)
+    {
+        BYTE patch[] = { 0x81, 0xeb, 0x8d };
+        WriteProcessMemory(hProcess, (LPVOID)0x00413350, &patch[0], sizeof(patch[0]), NULL);   // placed_anywhere
+        WriteProcessMemory(hProcess, (LPVOID)0x0043d100, &patch[1], sizeof(patch[1]), NULL);   // placed_anywhere_preview
+        WriteProcessMemory(hProcess, (LPVOID)0x0042dec9, &patch[2], sizeof(patch[2]), NULL);   // placed_anywhere_iz
+    }
+    else
+    {
+        BYTE patch[] = { 0x84, 0x74, 0x84 };
+        WriteProcessMemory(hProcess, (LPVOID)0x00413350, &patch[0], sizeof(patch[0]), NULL);
+        WriteProcessMemory(hProcess, (LPVOID)0x0043d100, &patch[1], sizeof(patch[1]), NULL);
+        WriteProcessMemory(hProcess, (LPVOID)0x0042dec9, &patch[2], sizeof(patch[2]), NULL);
+    }
 
     CloseHandle(hProcess);
 }
@@ -208,6 +230,66 @@ VOID CPvz::Speed()
     //     00464A9B 90 nop
     char *patch = "\x90\x90\x90\x90\x90\x90";
     WriteProcessMemory(hProcess, (LPVOID)0x00464a96, patch, 6, NULL);
+
+    CloseHandle(hProcess);
+}
+
+// 清除浓雾
+VOID CPvz::NoFog(DWORD Enable)
+{
+    DWORD dwPid = GetGamePid();
+    if (dwPid == -1)
+    {
+        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
+        return;
+    }
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    if (hProcess == NULL)
+    {
+        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    if (Enable)
+    {
+        BYTE patch[] = { 0x31, 0xd2 }; // 0xd231 的低字节是 0x31，高字节是 0xd2
+        WriteProcessMemory(hProcess, (LPVOID)0x0041df4d, patch, sizeof(patch), NULL);
+    }
+    else
+    {
+        BYTE patch[] = { 0x3b, 0xf2 }; // 0xf23b 拆成两个字节
+        WriteProcessMemory(hProcess, (LPVOID)0x0041df4d, patch, sizeof(patch), NULL);
+    }
+
+    CloseHandle(hProcess);
+}
+
+// 罐子透视
+VOID CPvz::SeeVase(DWORD Enable)
+{
+    DWORD dwPid = GetGamePid();
+    if (dwPid == -1)
+    {
+        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
+        return;
+    }
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    if (hProcess == NULL)
+    {
+        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    if (Enable)
+    {
+        BYTE patch[] = { 0x66, 0xB8, 0x33, 0x00 };
+        WriteProcessMemory(hProcess, (LPVOID)0x004531ca, patch, sizeof(patch), NULL);
+    }
+    else
+    {
+        BYTE patch[] = { 0x85, 0xC0, 0x7E, 0x04 };
+        WriteProcessMemory(hProcess, (LPVOID)0x004531ca, patch, sizeof(patch), NULL);
+    }
 
     CloseHandle(hProcess);
 }

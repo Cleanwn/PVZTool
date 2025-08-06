@@ -4,30 +4,33 @@
 
 class CPvz
 {
+private:
+    // 内部工具函数
+    DWORD GetGamePid();
 public:
     CPvz();
     ~CPvz();
+
     // 修改阳光的值
     VOID ModifySunValue(DWORD dwSun);
     // 后台模式
     VOID BgMode(DWORD Enable);
-
-private:
-    // 获取游戏的 PID
-    DWORD GetGamePid();
-public:
-    // 种植不减阳光
-    VOID SunNop();
+    // 免费种植
+    VOID FreePlant(DWORD Enable);
     // 种植免冷却
     VOID NoCd(DWORD Enable);
     // 修改金币
     VOID ModifyCoinValue(DWORD dwCoin);
-    // 重复建造，无需花盆、无需荷叶
-    VOID Build();
+    // 随意放置
+    VOID Build(DWORD Enable);
     // 自动收集
     VOID AutoCollected(DWORD Enable);
     // 加速攻击
     VOID Speed();
+    // 清除浓雾
+    VOID NoFog(DWORD Enable);
+    // 罐子透视
+    VOID SeeVase(DWORD Enable);
     // 加速阳光金币
     VOID More();
     // 全屏僵尸
@@ -43,4 +46,3 @@ public:
     // 吸怪
     VOID Attract();
 };
-

@@ -33,12 +33,14 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
     afx_msg void OnBnClickedBtnSun();
-    afx_msg void OnBnClickedBtnSunNop();
+    afx_msg void OnCheckLockShovel();
     afx_msg void OnCheckNoCd();
     afx_msg void OnBnClickedBtnCoin();
-    afx_msg void OnBnClickedBtnBuild();
+    afx_msg void OnCheckBuild();
     afx_msg void OnCheckAutoCollected();
     afx_msg void OnBnClickedBtnSpeed();
+    afx_msg void OnCheckNoFog();
+    afx_msg void OnCheckSeeVase();
     afx_msg void OnBnClickedBtnMore();
     afx_msg void OnBnClickedBtnAllScreen();
     afx_msg void OnBnClickedBtnUnAllScreen();
@@ -46,6 +48,5 @@ public:
     afx_msg void OnBnClickedBtnStop();
     afx_msg void OnBnClickedBtnDead();
     afx_msg void OnBnClickedBtnY();
-
     afx_msg void OnCheckBgMode();
 };
