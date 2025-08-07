@@ -186,6 +186,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="data.h" />
     <ClInclude Include="Pvz.h" />
     <ClInclude Include="PvzTool.h" />
     <ClInclude Include="PvzToolDlg.h" />

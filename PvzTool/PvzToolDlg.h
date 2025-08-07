@@ -34,16 +34,22 @@ protected:
 public:
     afx_msg void OnBnClickedBtnSun();
     afx_msg void OnCheckLockShovel();
+    afx_msg void OnCheckFertilizer();
+    afx_msg void OnCheckTreeFood();
+    afx_msg void OnCheckBugSpray();
+    afx_msg void OnCheckChocolate();
     afx_msg void OnCheckNoCd();
     afx_msg void OnBnClickedBtnCoin();
     afx_msg void OnCheckBuild();
     afx_msg void OnCheckAutoCollected();
     afx_msg void OnBnClickedBtnSpeed();
     afx_msg void OnCheckNoFog();
+    afx_msg void OnCheckNoCrater();
+    afx_msg void OnCheckNoIceTrail();
     afx_msg void OnCheckSeeVase();
     afx_msg void OnBnClickedBtnMore();
-    afx_msg void OnBnClickedBtnAllScreen();
-    afx_msg void OnBnClickedBtnUnAllScreen();
+    afx_msg void OnCheckStopZombies();
+    afx_msg void OnCheckStopSpawning();
     afx_msg void OnBnClickedBtnCool();
     afx_msg void OnBnClickedBtnStop();
     afx_msg void OnBnClickedBtnDead();
