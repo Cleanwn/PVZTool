@@ -6,7 +6,7 @@ class CPvz
 {
 private:
     // 内部工具函数
-    DWORD GetGamePid();
+    HANDLE OpenGameProcess();
 public:
     CPvz();
     ~CPvz();
@@ -47,6 +47,8 @@ public:
     VOID ReloadInstantly(DWORD Enable);
     // 罐子透视
     VOID SeeVase(DWORD Enable);
+    // 蘑菇睡醒
+    VOID MushroomsAwake(DWORD Enable);
     // 加速阳光金币
     VOID More();
     // 停滞不前

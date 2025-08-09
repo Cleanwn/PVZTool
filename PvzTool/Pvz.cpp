@@ -11,34 +11,37 @@ CPvz::~CPvz()
 {
 }
 
-// 获取游戏的 PID
-DWORD CPvz::GetGamePid()
+// 内部工具函数
+HANDLE CPvz::OpenGameProcess()
 {
-    HWND hWnd = ::FindWindow(NULL, GAME_NAME);
-
-    if (hWnd == NULL)
+    // 获取游戏 PID
+    HWND hWnd = ::FindWindowW(NULL, GAME_NAME);
+    if (!hWnd)
     {
-        return -1;
+        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
+        return NULL;
     }
 
     DWORD dwPid = 0;
     ::GetWindowThreadProcessId(hWnd, &dwPid);
 
-    return dwPid;
+    // 打开游戏进程
+    HANDLE hProcess = ::OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    if (!hProcess)
+    {
+        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
+        return NULL;
+    }
+
+    return hProcess;
 }
 
 
 // 修改阳光的值
 VOID CPvz::ModifySunValue(DWORD dwSun)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     // 00731C50 00731CDC
     // 00475373 - mov edi, [esi + 00000868] ESI = 0286B490
@@ -57,19 +60,8 @@ VOID CPvz::ModifySunValue(DWORD dwSun)
 // 种植冷却
 VOID CPvz::NoCd(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -88,19 +80,8 @@ VOID CPvz::NoCd(DWORD Enable)
 // 连续铲子
 VOID CPvz::LockShovel(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -120,19 +101,8 @@ VOID CPvz::LockShovel(DWORD Enable)
 // 无限花肥
 VOID CPvz::Fertilizer(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -159,19 +129,8 @@ VOID CPvz::Fertilizer(DWORD Enable)
 // 无限树肥
 VOID CPvz::TreeFood(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -198,19 +157,8 @@ VOID CPvz::TreeFood(DWORD Enable)
 // 无限杀虫剂
 VOID CPvz::BugSpray(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -237,19 +185,8 @@ VOID CPvz::BugSpray(DWORD Enable)
 // 无限巧克力
 VOID CPvz::Chocolate(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -281,14 +218,8 @@ VOID CPvz::Chocolate(DWORD Enable)
 // 修改金币
 VOID CPvz::ModifyCoinValue(DWORD dwCoin)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     DWORD dwNum = 0;
     ReadProcessMemory(hProcess, (LPCVOID)0x731c50, &dwNum, sizeof(DWORD), NULL);
@@ -303,19 +234,8 @@ VOID CPvz::ModifyCoinValue(DWORD dwCoin)
 // 随意放置
 VOID CPvz::Build(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -339,19 +259,8 @@ VOID CPvz::Build(DWORD Enable)
 // 自动收集
 VOID CPvz::AutoCollected(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -372,23 +281,9 @@ VOID CPvz::AutoCollected(DWORD Enable)
 // 加速攻击
 VOID CPvz::Speed()
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-
-    // 原指令：00464A96 0F85 98FEFFFF jne 00464934
-    // 修改后的指令：
-    //     00464A96 90 nop 
-    //     00464A97 90 nop
-    //     00464A98 90 nop
-    //     00464A99 90 nop
-    //     00464A9A 90 nop
-    //     00464A9B 90 nop
     char *patch = "\x90\x90\x90\x90\x90\x90";
     WriteProcessMemory(hProcess, (LPVOID)0x00464a96, patch, 6, NULL);
 
@@ -398,18 +293,8 @@ VOID CPvz::Speed()
 // 清除浓雾
 VOID CPvz::NoFog(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -428,18 +313,8 @@ VOID CPvz::NoFog(DWORD Enable)
 // 核弹无坑
 VOID CPvz::NoCrater(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -458,18 +333,8 @@ VOID CPvz::NoCrater(DWORD Enable)
 // 冰车无痕
 VOID CPvz::NoIceTrail(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -502,18 +367,8 @@ VOID CPvz::NoIceTrail(DWORD Enable)
 // 锁定黄油
 VOID CPvz::LockButter(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -532,18 +387,8 @@ VOID CPvz::LockButter(DWORD Enable)
 // 立刻装填
 VOID CPvz::ReloadInstantly(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -583,18 +428,8 @@ VOID CPvz::ReloadInstantly(DWORD Enable)
 // 罐子透视
 VOID CPvz::SeeVase(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -610,21 +445,33 @@ VOID CPvz::SeeVase(DWORD Enable)
     CloseHandle(hProcess);
 }
 
+// 蘑菇睡醒 (下次种植生效)
+VOID CPvz::MushroomsAwake(DWORD Enable)
+{
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
+
+    if (Enable)
+    {
+        BYTE patch[] = { 0xeb };
+        WriteProcessMemory(hProcess, (LPVOID)0x004641a2, patch, sizeof(patch), NULL);
+    }
+    else
+    {
+        BYTE patch[] = { 0x74 };
+        WriteProcessMemory(hProcess, (LPVOID)0x004641a2, patch, sizeof(patch), NULL);
+    }
+
+    CloseHandle(hProcess);
+}
+
 
 // 加速阳光金币
 VOID CPvz::More()
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-
-    // 原指令：0045FA48 83 47 58 FF add dword ptr [edi+58],-01 { 255 }
-    // 修改后的指令：0045FA48 83 47 58 9C add dword ptr [edi+58],-64 { 156 }
     char *patch = "\x83\x47\x58\x9c";
     WriteProcessMemory(hProcess, (LPVOID)0x0045FA48, patch, 4, NULL);
 
@@ -635,18 +482,8 @@ VOID CPvz::More()
 // 停滞不前
 VOID CPvz::StopZombies(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -670,18 +507,8 @@ VOID CPvz::StopZombies(DWORD Enable)
 // 暂停刷怪
 VOID CPvz::StopSpawning(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {    
@@ -700,18 +527,8 @@ VOID CPvz::StopSpawning(DWORD Enable)
 // 小丑不爆
 VOID CPvz::ZombieNotExplode(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -735,17 +552,9 @@ VOID CPvz::ZombieNotExplode(DWORD Enable)
 // 僵尸冰冻状态
 VOID CPvz::Cool()
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-
-    // 原指令：0052AB3E 0F85 A4000000 jne 0052ABE8
-    // 修改后的指令：0052AB3E E9 BD63EDFF jmp 00400F00
     char *patch1 = "\xe9\xbd\x63\xed\xff\x90";
     WriteProcessMemory(hProcess, (LPVOID)0x0052AB3E, patch1, 6, NULL);
 
@@ -753,10 +562,6 @@ VOID CPvz::Cool()
     DWORD dwOldProtect = 0;
     VirtualProtectEx(hProcess, (LPVOID)0x00400f00, 64, PAGE_EXECUTE_READWRITE, &dwOldProtect);
 
-    // 在新申请的空间写入的指令
-    //     00400F00 C7 86 AC000000 00100000 mov [esi+000000AC],00001000 { 4096 }
-    //     00400F0A 0F85 D89C1200 jne 0052ABE8
-    //     00400F10 E9 2F9C1200 jmp 0052AB44
     char *patch2 = "\xc7\x86\xac\x00\x00\x00\x00\x10\x00\x00\x0F\x85\xD8\x9C\x12\x00\xE9\x2F\x9C\x12\x00";
     WriteProcessMemory(hProcess, (LPVOID)0x00400f00, patch2, 21, NULL);
 
@@ -767,41 +572,15 @@ VOID CPvz::Cool()
 // 僵尸奶油状态
 VOID CPvz::Stop()
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-
-    // 原指令：0052AB3E 0F85 A4000000 jne 0052ABE8
-    // 修改后的指令：
-    //    0052AB3E E9 BD63EDFF jmp 00400F00
-    //    0052AB43 90          nop
     char *patch1 = "\xe9\xbd\x63\xed\xff\x90";
     WriteProcessMemory(hProcess, (LPVOID)0x0052AB3E, patch1, 6, NULL);
 
     DWORD dwOldProtect = 0;
     VirtualProtectEx(hProcess, (LPVOID)0x00400f00, 64, PAGE_EXECUTE_READWRITE, &dwOldProtect);
 
-
-    // 在新申请的空间写入的指令
-    // 00400F00 60 pushad 
-    // 00400F01 9C pushfd
-    // 00400F02 D9 46 2C fld dword ptr[esi + 2C]
-    // 00400F05 C7 46 2C 56FB4843 mov[esi + 2C], 4348FB56{ 200.98 }
-    // 00400F0C D8 56 2C fcom dword ptr[esi + 2C]
-    // 00400F0F 9BDFE0 wait:fstsw ax
-    // 00400F12 9E sahf
-    // 00400F13 77 0A ja 00400F1F
-    // 00400F15 C7 86 B0000000 00010000 mov[esi + 000000B0], 00000100 { 256 }
-    // 00400F1F D9 5E 2C fstp dword ptr[esi + 2C]
-    // 00400F22 9D popfd
-    // 00400F23 61 popad
-    // 00400F24 0F85 BE9C1200 jne 0052ABE8
-    // 00400F2A E9 159C1200 jmp 0052AB44
     char *patch2 = "\x60"
         "\x9c"
         "\xd9\x46\x2c"
@@ -825,15 +604,8 @@ VOID CPvz::Stop()
 // 僵尸死亡
 VOID CPvz::Dead()
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     // 原指令：0052AB3E 0F85 A4000000 jne 0052ABE8
     // 修改后的指令：
@@ -859,14 +631,8 @@ VOID CPvz::Dead()
 // 吸怪
 VOID CPvz::Attract()
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     // 原指令：0052AB3E 0F85 A4000000 jne 0052ABE8
     // 修改后的指令：
@@ -891,18 +657,8 @@ VOID CPvz::Attract()
 // 后台模式
 VOID CPvz::BgMode(DWORD Enable)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     if (Enable)
     {
@@ -928,18 +684,8 @@ VOID CPvz::BgMode(DWORD Enable)
 // 游戏速度
 VOID CPvz::Test(CComboBox* Plants1)
 {
-    DWORD dwPid = GetGamePid();
-    if (dwPid == -1)
-    {
-        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
-        return;
-    }
-    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
-    if (hProcess == NULL)
-    {
-        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
-        return;
-    }
+    HANDLE hProcess = OpenGameProcess();
+    if (!hProcess) return;
 
     int nIndex = Plants1->GetCurSel();
     const int time_ms[] = {

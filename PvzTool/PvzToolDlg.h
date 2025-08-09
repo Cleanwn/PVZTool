@@ -65,4 +65,5 @@ public:
     afx_msg void OnCheckLockButter();
     afx_msg void OnCheckReloadInstantly();
     afx_msg void OnCheckZombieNotExplode();
+    afx_msg void OnCheckMushroomsAwake();
 };

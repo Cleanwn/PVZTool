@@ -71,6 +71,7 @@ BEGIN_MESSAGE_MAP(CPvzToolDlg, CDialogEx)
 
     ON_BN_CLICKED(IDC_BTN_SUN, &CPvzToolDlg::OnBnClickedBtnSun)
     ON_BN_CLICKED(IDC_CHECK_LOCK_SHOVEL, &CPvzToolDlg::OnCheckLockShovel)
+	ON_BN_CLICKED(IDC_CHECK_MUSH_ROOMS_AWAKE, &CPvzToolDlg::OnCheckMushroomsAwake)
 	ON_BN_CLICKED(IDC_CHECK_FERTILIZER, &CPvzToolDlg::OnCheckFertilizer)
 	ON_BN_CLICKED(IDC_CHECK_TREE_FOOD, &CPvzToolDlg::OnCheckTreeFood)
 	ON_BN_CLICKED(IDC_CHECK_BUG_SPRAY, &CPvzToolDlg::OnCheckBugSpray)
@@ -334,6 +335,14 @@ void CPvzToolDlg::OnCheckSeeVase()
 	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_SEE_VASE);
 	CPvz pvz = CPvz();
 	pvz.SeeVase(bChecked == BST_CHECKED);
+}
+
+// 蘑菇睡醒
+void CPvzToolDlg::OnCheckMushroomsAwake()
+{
+	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_MUSH_ROOMS_AWAKE);
+	CPvz pvz = CPvz();
+	pvz.MushroomsAwake(bChecked == BST_CHECKED);
 }
 
 // 后台模式
