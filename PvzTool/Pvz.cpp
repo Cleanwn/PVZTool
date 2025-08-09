@@ -499,6 +499,87 @@ VOID CPvz::NoIceTrail(DWORD Enable)
     CloseHandle(hProcess);
 }
 
+// 锁定黄油
+VOID CPvz::LockButter(DWORD Enable)
+{
+    DWORD dwPid = GetGamePid();
+    if (dwPid == -1)
+    {
+        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
+        return;
+    }
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    if (hProcess == NULL)
+    {
+        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    if (Enable)
+    {
+        BYTE patch[] = { 0x70 };
+        WriteProcessMemory(hProcess, (LPVOID)0x00465522, patch, sizeof(patch), NULL);
+    }
+    else
+    {
+        BYTE patch[] = { 0x75 };
+        WriteProcessMemory(hProcess, (LPVOID)0x00465522, patch, sizeof(patch), NULL);
+    }
+
+    CloseHandle(hProcess);
+}
+
+// 立刻装填
+VOID CPvz::ReloadInstantly(DWORD Enable)
+{
+    DWORD dwPid = GetGamePid();
+    if (dwPid == -1)
+    {
+        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
+        return;
+    }
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    if (hProcess == NULL)
+    {
+        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    if (Enable)
+    {
+        // reload_instantly
+        BYTE patch[] = { 0x80 };
+        WriteProcessMemory(hProcess, (LPVOID)0x004673eb, patch, sizeof(patch), NULL);
+        // grow_up_quickly
+        BYTE patch1[] = { 0x80 };
+        WriteProcessMemory(hProcess, (LPVOID)0x00466204, patch1, sizeof(patch1), NULL);
+        BYTE patch2[] = { 0x70 };
+        WriteProcessMemory(hProcess, (LPVOID)0x00465f53, patch2, sizeof(patch2), NULL);
+        // no_cooldown
+        BYTE patch3[] = { 0x70 };
+        WriteProcessMemory(hProcess, (LPVOID)0x00467905, patch3, sizeof(patch3), NULL);
+        BYTE patch4[] = { 0x80 };
+        WriteProcessMemory(hProcess, (LPVOID)0x004681f7, patch4, sizeof(patch4), NULL);
+    }
+    else
+    {
+        BYTE patch[] = { 0x85 };
+        WriteProcessMemory(hProcess, (LPVOID)0x004673eb, patch, sizeof(patch), NULL);
+        // grow_up_quickly
+        BYTE patch1[] = { 0x85 };
+        WriteProcessMemory(hProcess, (LPVOID)0x00466204, patch1, sizeof(patch1), NULL);
+        BYTE patch2[] = { 0x75 };
+        WriteProcessMemory(hProcess, (LPVOID)0x00465f53, patch2, sizeof(patch2), NULL);
+        // no_cooldown
+        BYTE patch3[] = { 0x75 };
+        WriteProcessMemory(hProcess, (LPVOID)0x00467905, patch3, sizeof(patch3), NULL);
+        BYTE patch4[] = { 0x85 };
+        WriteProcessMemory(hProcess, (LPVOID)0x004681f7, patch4, sizeof(patch4), NULL);
+    }
+
+    CloseHandle(hProcess);
+}
+
 // 罐子透视
 VOID CPvz::SeeVase(DWORD Enable)
 {
@@ -611,6 +692,40 @@ VOID CPvz::StopSpawning(DWORD Enable)
     {
         BYTE patch[] = { 0x74 };
         WriteProcessMemory(hProcess, (LPVOID)0x0042a12c, patch, sizeof(patch), NULL);
+    }
+
+    CloseHandle(hProcess);
+}
+
+// 小丑不爆
+VOID CPvz::ZombieNotExplode(DWORD Enable)
+{
+    DWORD dwPid = GetGamePid();
+    if (dwPid == -1)
+    {
+        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
+        return;
+    }
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    if (hProcess == NULL)
+    {
+        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    if (Enable)
+    {
+        BYTE patch[] = { 0x81 };
+        WriteProcessMemory(hProcess, (LPVOID)0x0053b2ec, patch, sizeof(patch), NULL);
+        BYTE patch1[] = { 0x81 };
+        WriteProcessMemory(hProcess, (LPVOID)0x0053bdcd, patch1, sizeof(patch1), NULL);
+    }
+    else
+    {
+        BYTE patch[] = { 0x8f };
+        WriteProcessMemory(hProcess, (LPVOID)0x0053b2ec, patch, sizeof(patch), NULL);
+        BYTE patch1[] = { 0x85 };
+        WriteProcessMemory(hProcess, (LPVOID)0x0053bdcd, patch1, sizeof(patch1), NULL);
     }
 
     CloseHandle(hProcess);
@@ -808,3 +923,42 @@ VOID CPvz::BgMode(DWORD Enable)
 
     CloseHandle(hProcess);
 }
+
+
+// 游戏速度
+VOID CPvz::Test(CComboBox* Plants1)
+{
+    DWORD dwPid = GetGamePid();
+    if (dwPid == -1)
+    {
+        MessageBox(NULL, L"游戏未找到", L"提示", MB_OK);
+        return;
+    }
+    HANDLE hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, dwPid);
+    if (hProcess == NULL)
+    {
+        MessageBox(NULL, L"无法打开游戏进程", L"错误", MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    int nIndex = Plants1->GetCurSel();
+    const int time_ms[] = {
+        1,   // 10x
+        2,   // 5x
+        5,   // 2x
+        10,  // 1x
+        20,  // 0.5x
+        50,  // 0.2x
+        100, // 0.1x
+    };
+
+    //设置数量
+    DWORD value = time_ms[nIndex];
+    DWORD dwNum = 0;
+    ReadProcessMemory(hProcess, (LPCVOID)BASE_ADDRESS, &dwNum, sizeof(DWORD), NULL);
+
+    WriteProcessMemory(hProcess, (LPVOID)(dwNum + 0x454 + 0x60), &value, sizeof(DWORD), NULL);
+
+    CloseHandle(hProcess);
+}
+

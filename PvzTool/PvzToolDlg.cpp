@@ -58,7 +58,11 @@ CPvzToolDlg::CPvzToolDlg(CWnd* pParent /*=NULL*/)
 void CPvzToolDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+
+	// 绑定控件 IDC_CHECK_DROPDOWNLIST 到 Plants1 变量
+	DDX_Control(pDX, IDC_CHECK_DROPDOWNLIST, Plants1);
 }
+
 
 BEGIN_MESSAGE_MAP(CPvzToolDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
@@ -79,15 +83,20 @@ BEGIN_MESSAGE_MAP(CPvzToolDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_CHECK_NO_FOG, &CPvzToolDlg::OnCheckNoFog)
 	ON_BN_CLICKED(IDC_CHECK_NO_CRATER, &CPvzToolDlg::OnCheckNoCrater)
 	ON_BN_CLICKED(IDC_CHECK_NO_ICE_TRAIL, &CPvzToolDlg::OnCheckNoIceTrail)
+	ON_BN_CLICKED(IDC_CHECK_LOCK_BUTTER, &CPvzToolDlg::OnCheckLockButter)
+	ON_BN_CLICKED(IDC_CHECK_RELOAD_INSTANTLY, &CPvzToolDlg::OnCheckReloadInstantly)
 	ON_BN_CLICKED(IDC_CHECK_SEE_VASE, &CPvzToolDlg::OnCheckSeeVase)
     ON_BN_CLICKED(IDC_BTN_MORE, &CPvzToolDlg::OnBnClickedBtnMore)
     ON_BN_CLICKED(IDC_CHECK_STOP_ZOMBIES, &CPvzToolDlg::OnCheckStopZombies)
     ON_BN_CLICKED(IDC_CHECK_STOP_SPAWNING, &CPvzToolDlg::OnCheckStopSpawning)
+	ON_BN_CLICKED(IDC_CHECK_ZOMBIE_NOT_EXPLODE, &CPvzToolDlg::OnCheckZombieNotExplode)
     ON_BN_CLICKED(IDC_BTN_COOL, &CPvzToolDlg::OnBnClickedBtnCool)
     ON_BN_CLICKED(IDC_BTN_STOP, &CPvzToolDlg::OnBnClickedBtnStop)
     ON_BN_CLICKED(IDC_BTN_DEAD, &CPvzToolDlg::OnBnClickedBtnDead)
     ON_BN_CLICKED(IDC_BTN_Y, &CPvzToolDlg::OnBnClickedBtnY)
 	ON_BN_CLICKED(IDC_CHECK_BG_MODE, &CPvzToolDlg::OnCheckBgMode)
+	ON_BN_CLICKED(IDC_BTN_TEST, &CPvzToolDlg::OnBnClickedTest)
+	
 
 END_MESSAGE_MAP()
 
@@ -124,6 +133,19 @@ BOOL CPvzToolDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+
+	// 这里写你的植物列表
+		CString plants[] = 
+		{ 
+			_T("10x"), _T("5x"), _T("2x"), _T("1x"),
+			_T("0.5x"), _T("0.2x"), _T("0.1x")
+		};
+		for (auto& plant : plants)
+		{
+			Plants1.AddString(plant);
+		}
+		Plants1.SetCurSel(3); // 默认选中第一个
+
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
@@ -290,6 +312,22 @@ void CPvzToolDlg::OnCheckNoIceTrail()
 	pvz.NoIceTrail(bChecked == BST_CHECKED);
 }
 
+// 锁定黄油
+void CPvzToolDlg::OnCheckLockButter()
+{
+	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_LOCK_BUTTER);
+	CPvz pvz = CPvz();
+	pvz.LockButter(bChecked == BST_CHECKED);
+}
+
+// 立刻装填
+void CPvzToolDlg::OnCheckReloadInstantly()
+{
+	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_RELOAD_INSTANTLY);
+	CPvz pvz = CPvz();
+	pvz.ReloadInstantly(bChecked == BST_CHECKED);
+}
+
 // 罐子透视
 void CPvzToolDlg::OnCheckSeeVase()
 {
@@ -328,6 +366,14 @@ void CPvzToolDlg::OnCheckStopSpawning()
 	pvz.StopSpawning(bChecked == BST_CHECKED);
 }
 
+// 小丑不爆
+void CPvzToolDlg::OnCheckZombieNotExplode()
+{
+	BOOL bChecked = IsDlgButtonChecked(IDC_CHECK_ZOMBIE_NOT_EXPLODE);
+	CPvz pvz = CPvz();
+	pvz.ZombieNotExplode(bChecked == BST_CHECKED);
+}
+
 
 void CPvzToolDlg::OnBnClickedBtnCool()
 {
@@ -354,6 +400,13 @@ void CPvzToolDlg::OnBnClickedBtnY()
 {
     CPvz pvz = CPvz();
     pvz.Attract();
+}
+
+// 通知植物
+void CPvzToolDlg::OnBnClickedTest()
+{
+	CPvz pvz = CPvz();
+	pvz.Test(&Plants1);
 }
 
 

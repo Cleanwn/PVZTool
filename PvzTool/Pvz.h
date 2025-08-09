@@ -41,6 +41,10 @@ public:
     VOID NoCrater(DWORD Enable);
     // 冰车无痕
     VOID NoIceTrail(DWORD Enable);
+    // 锁定黄油
+    VOID LockButter(DWORD Enable);
+    // 立刻装填
+    VOID ReloadInstantly(DWORD Enable);
     // 罐子透视
     VOID SeeVase(DWORD Enable);
     // 加速阳光金币
@@ -49,6 +53,8 @@ public:
     VOID StopZombies(DWORD Enable);
     // 暂停刷怪
     VOID StopSpawning(DWORD Enable);
+    // 小丑不爆
+    VOID ZombieNotExplode(DWORD Enable);
     // 僵尸冰冻状态
     VOID Cool();
     // 僵尸奶油状态
@@ -57,4 +63,6 @@ public:
     VOID Dead();
     // 吸怪
     VOID Attract();
+    // 通知
+    VOID Test(CComboBox* Plants1);
 };
