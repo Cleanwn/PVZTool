@@ -50,7 +50,6 @@ VOID CPvz::ModifySunValue(DWORD dwSun)
     DWORD dwNum = 0;
     ReadProcessMemory(hProcess, (LPCVOID)BASE_ADDRESS, &dwNum, sizeof(DWORD), NULL);
     ReadProcessMemory(hProcess, (LPCVOID)(dwNum + board), &dwNum, sizeof(DWORD), NULL);
-
     WriteProcessMemory(hProcess, (LPVOID)(dwNum + sun), &dwSun, sizeof(DWORD), NULL);
 
     CloseHandle(hProcess);
@@ -94,6 +93,7 @@ VOID CPvz::LockShovel(DWORD Enable)
         BYTE patch[] = { 0x89 };
         WriteProcessMemory(hProcess, (LPVOID)0x004158b3, patch, sizeof(patch), NULL);
     }
+
     CloseHandle(hProcess);
 }
 
@@ -115,7 +115,6 @@ VOID CPvz::Fertilizer(DWORD Enable)
         DWORD dwNum = 0;
         ReadProcessMemory(hProcess, (LPCVOID)BASE_ADDRESS, &dwNum, sizeof(DWORD), NULL);
         ReadProcessMemory(hProcess, (LPCVOID)(dwNum + user_data), &dwNum, sizeof(DWORD), NULL);
-
         WriteProcessMemory(hProcess, (LPVOID)(dwNum + twiddydinky + 14 * 4), &value, sizeof(DWORD), NULL);
     }
     else
@@ -123,6 +122,7 @@ VOID CPvz::Fertilizer(DWORD Enable)
         BYTE patch[] = { 0xff };
         WriteProcessMemory(hProcess, (LPVOID)0x0052da8b, patch, sizeof(patch), NULL);
     }
+
     CloseHandle(hProcess);
 }
 
@@ -143,7 +143,6 @@ VOID CPvz::TreeFood(DWORD Enable)
         DWORD dwNum = 0;
         ReadProcessMemory(hProcess, (LPCVOID)BASE_ADDRESS, &dwNum, sizeof(DWORD), NULL);
         ReadProcessMemory(hProcess, (LPCVOID)(dwNum + user_data), &dwNum, sizeof(DWORD), NULL);
-
         WriteProcessMemory(hProcess, (LPVOID)(dwNum + twiddydinky + 28 * 4), &value, sizeof(DWORD), NULL);
     }
     else
@@ -151,6 +150,7 @@ VOID CPvz::TreeFood(DWORD Enable)
         BYTE patch[] = { 0xff };
         WriteProcessMemory(hProcess, (LPVOID)0x004311ed, patch, sizeof(patch), NULL);
     }
+
     CloseHandle(hProcess);
 }
 
@@ -171,7 +171,6 @@ VOID CPvz::BugSpray(DWORD Enable)
         DWORD dwNum = 0;
         ReadProcessMemory(hProcess, (LPCVOID)BASE_ADDRESS, &dwNum, sizeof(DWORD), NULL);
         ReadProcessMemory(hProcess, (LPCVOID)(dwNum + user_data), &dwNum, sizeof(DWORD), NULL);
-
         WriteProcessMemory(hProcess, (LPVOID)(dwNum + twiddydinky + 15 * 4), &value, sizeof(DWORD), NULL);
     }
     else
@@ -179,6 +178,7 @@ VOID CPvz::BugSpray(DWORD Enable)
         BYTE patch[] = { 0xff };
         WriteProcessMemory(hProcess, (LPVOID)0x0052db83, patch, sizeof(patch), NULL);
     }
+
     CloseHandle(hProcess);
 }
 
@@ -201,7 +201,6 @@ VOID CPvz::Chocolate(DWORD Enable)
         DWORD dwNum = 0;
         ReadProcessMemory(hProcess, (LPCVOID)BASE_ADDRESS, &dwNum, sizeof(DWORD), NULL);
         ReadProcessMemory(hProcess, (LPCVOID)(dwNum + user_data), &dwNum, sizeof(DWORD), NULL);
-
         WriteProcessMemory(hProcess, (LPVOID)(dwNum + twiddydinky + 26 * 4), &value, sizeof(DWORD), NULL);
     }
     else
@@ -211,6 +210,7 @@ VOID CPvz::Chocolate(DWORD Enable)
         BYTE patch1[] = { 0xff };
         WriteProcessMemory(hProcess, (LPVOID)0x0052d727, patch1, sizeof(patch1), NULL);
     }
+
     CloseHandle(hProcess);
 }
 
@@ -222,10 +222,9 @@ VOID CPvz::ModifyCoinValue(DWORD dwCoin)
     if (!hProcess) return;
 
     DWORD dwNum = 0;
-    ReadProcessMemory(hProcess, (LPCVOID)0x731c50, &dwNum, sizeof(DWORD), NULL);
-    ReadProcessMemory(hProcess, (LPCVOID)(dwNum + 0x94C), &dwNum, sizeof(DWORD), NULL);
-
-    WriteProcessMemory(hProcess, (LPVOID)(dwNum + 0x54), &dwCoin, sizeof(DWORD), NULL);
+    ReadProcessMemory(hProcess, (LPCVOID)BASE_ADDRESS, &dwNum, sizeof(DWORD), NULL);
+    ReadProcessMemory(hProcess, (LPCVOID)(dwNum + user_data), &dwNum, sizeof(DWORD), NULL);
+    WriteProcessMemory(hProcess, (LPVOID)(dwNum + money), &dwCoin, sizeof(DWORD), NULL);
 
     CloseHandle(hProcess);
 }
@@ -662,19 +661,13 @@ VOID CPvz::BgMode(DWORD Enable)
 
     if (Enable)
     {
-        BYTE patch1[] = { 0xEB, 0x0F };
-        WriteProcessMemory(hProcess, (LPVOID)0x004540DA, patch1, sizeof(patch1), NULL);
-
-        BYTE patch2[] = { 0xEB, 0x06 };
-        WriteProcessMemory(hProcess, (LPVOID)0x004540E3, patch2, sizeof(patch2), NULL);
+        WORD patch[] = { 0x00eb };
+        WriteProcessMemory(hProcess, (LPVOID)0x005d87c9, patch, sizeof(patch), NULL);
     }
     else
     {
-        BYTE original1[] = { 0x7C, 0x0F };  // 举例：原始是 JL +0F
-        WriteProcessMemory(hProcess, (LPVOID)0x004540DA, original1, sizeof(original1), NULL);
-
-        BYTE original2[] = { 0x75, 0x06 };  // 举例：原始是 JNZ +06
-        WriteProcessMemory(hProcess, (LPVOID)0x004540E3, original2, sizeof(original2), NULL);
+        WORD patch[] = { 0x4074 };
+        WriteProcessMemory(hProcess, (LPVOID)0x005d87c9, patch, sizeof(patch), NULL);
     }
 
     CloseHandle(hProcess);
@@ -699,11 +692,11 @@ VOID CPvz::Test(CComboBox* Plants1)
     };
 
     //设置数量
-    DWORD value = time_ms[nIndex];
+    int value = time_ms[nIndex];
     DWORD dwNum = 0;
     ReadProcessMemory(hProcess, (LPCVOID)BASE_ADDRESS, &dwNum, sizeof(DWORD), NULL);
 
-    WriteProcessMemory(hProcess, (LPVOID)(dwNum + 0x454 + 0x60), &value, sizeof(DWORD), NULL);
+    WriteProcessMemory(hProcess, (LPVOID)(dwNum + 0x454 + 0x60), &value, sizeof(value), NULL);
 
     CloseHandle(hProcess);
 }
